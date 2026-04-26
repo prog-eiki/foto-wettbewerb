@@ -559,7 +559,6 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
         import { getDatabase, ref, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
-        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCqCw09lS-gbkdd00kYxaKE8NAd3rcomRo",
@@ -572,7 +571,6 @@
         };
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const storage = getStorage(app);
 
         document.addEventListener('DOMContentLoaded', () => {
             const uploadForm = document.getElementById('uploadForm');
@@ -610,10 +608,6 @@
             window.deletePhoto = function(event, id) {
                 event.stopPropagation(); // Lightbox verhindern
                 if (confirm('Möchtest du dieses Bild wirklich löschen?')) {
-                    // Aus Firebase Storage löschen
-                    const imageRef = storageRef(storage, 'photos/' + id);
-                    deleteObject(imageRef).catch((error) => console.error("Fehler beim Löschen des Bildes:", error));
-
                     // Von Firebase Realtime Database löschen (Echtzeit-Update passiert automatisch!)
                     remove(ref(db, 'photos/' + id));
                     
@@ -674,48 +668,74 @@
                     // Add loading state to button
                     const submitBtn = uploadForm.querySelector('.upload-btn');
                     const originalBtnText = submitBtn.textContent;
-                    submitBtn.textContent = 'Lädt hoch... Bitte warten';
+                    submitBtn.textContent = 'Bild wird verarbeitet...';
                     submitBtn.disabled = true;
 
-                    const photoId = Date.now();
-                    const imageRef = storageRef(storage, 'photos/' + photoId);
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const img = new Image();
+                        img.onload = function() {
+                            // Komprimierung: Canvas erstellen
+                            const canvas = document.createElement('canvas');
+                            let width = img.width;
+                            let height = img.height;
+                            
+                            // Maximale Größe definieren (z.B. 1200px)
+                            const MAX_WIDTH = 1200;
+                            const MAX_HEIGHT = 1200;
+                            
+                            if (width > height) {
+                                if (width > MAX_WIDTH) {
+                                    height *= MAX_WIDTH / width;
+                                    width = MAX_WIDTH;
+                                }
+                            } else {
+                                if (height > MAX_HEIGHT) {
+                                    width *= MAX_HEIGHT / height;
+                                    height = MAX_HEIGHT;
+                                }
+                            }
+                            
+                            canvas.width = width;
+                            canvas.height = height;
+                            
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+                            
+                            // Als komprimiertes JPEG exportieren (0.7 = 70% Qualität)
+                            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                            
+                            const photoId = Date.now();
+                            const newPhoto = {
+                                id: photoId,
+                                url: compressedDataUrl,
+                                title: photoTitle,
+                                author: userName,
+                                score: 0
+                            };
 
-                    // Bild in den Firebase Storage hochladen
-                    uploadBytes(imageRef, file).then((snapshot) => {
-                        // URL des hochgeladenen Bildes abrufen
-                        return getDownloadURL(snapshot.ref);
-                    }).then((downloadURL) => {
-                        const newPhoto = {
-                            id: photoId,
-                            url: downloadURL, // Wir speichern jetzt die Storage URL!
-                            title: photoTitle,
-                            author: userName,
-                            score: 0
+                            // In Realtime Database speichern
+                            set(ref(db, 'photos/' + photoId), newPhoto)
+                                .then(() => {
+                                    console.log('Bild erfolgreich komprimiert und gespeichert!');
+                                    uploadForm.reset();
+                                    fileNameSpan.textContent = 'Klicke hier, um ein Bild auszuwählen...';
+                                    fileNameSpan.style.color = 'var(--text-muted)';
+                                    document.querySelector('.file-label').style.borderColor = 'rgba(255, 255, 255, 0.15)';
+                                    document.querySelector('.file-label').style.backgroundColor = 'var(--card-bg)';
+                                    submitBtn.textContent = originalBtnText;
+                                    submitBtn.disabled = false;
+                                })
+                                .catch((error) => {
+                                    console.error('Fehler beim Speichern:', error);
+                                    alert('Es gab einen Fehler beim Hochladen: ' + error.message);
+                                    submitBtn.textContent = originalBtnText;
+                                    submitBtn.disabled = false;
+                                });
                         };
-
-                        // Daten in die Firebase Realtime Database schreiben
-                        return set(ref(db, 'photos/' + photoId), newPhoto);
-                    }).then(() => {
-                        console.log('Bild erfolgreich bei Firebase Storage und Database gespeichert!');
-                        
-                        // Reset form
-                        uploadForm.reset();
-                        fileNameSpan.textContent = 'Klicke hier, um ein Bild auszuwählen...';
-                        fileNameSpan.style.color = 'var(--text-muted)';
-                        document.querySelector('.file-label').style.borderColor = 'rgba(255, 255, 255, 0.15)';
-                        document.querySelector('.file-label').style.backgroundColor = 'var(--card-bg)';
-
-                        // Restore button
-                        submitBtn.textContent = originalBtnText;
-                        submitBtn.disabled = false;
-                    }).catch((error) => {
-                        console.error('Fehler beim Hochladen:', error);
-                        alert('Es gab einen Fehler beim Hochladen: ' + error.message);
-                        
-                        // Restore button even if there's an error
-                        submitBtn.textContent = originalBtnText;
-                        submitBtn.disabled = false;
-                    });
+                        img.src = event.target.result;
+                    };
+                    reader.readAsDataURL(file);
                 }
             });
 
