@@ -559,6 +559,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
         import { getDatabase, ref, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCqCw09lS-gbkdd00kYxaKE8NAd3rcomRo",
@@ -571,6 +572,7 @@
         };
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        const storage = getStorage(app);
 
         document.addEventListener('DOMContentLoaded', () => {
             const uploadForm = document.getElementById('uploadForm');
@@ -608,7 +610,11 @@
             window.deletePhoto = function(event, id) {
                 event.stopPropagation(); // Lightbox verhindern
                 if (confirm('Möchtest du dieses Bild wirklich löschen?')) {
-                    // Von Firebase löschen (Echtzeit-Update passiert automatisch!)
+                    // Aus Firebase Storage löschen
+                    const imageRef = storageRef(storage, 'photos/' + id);
+                    deleteObject(imageRef).catch((error) => console.error("Fehler beim Löschen des Bildes:", error));
+
+                    // Von Firebase Realtime Database löschen (Echtzeit-Update passiert automatisch!)
                     remove(ref(db, 'photos/' + id));
                     
                     // Lokalen Vote löschen
@@ -665,50 +671,51 @@
                 const file = photoFile.files[0];
 
                 if (file) {
-                    const reader = new FileReader();
-
                     // Add loading state to button
                     const submitBtn = uploadForm.querySelector('.upload-btn');
                     const originalBtnText = submitBtn.textContent;
-                    submitBtn.textContent = 'Lädt hoch...';
+                    submitBtn.textContent = 'Lädt hoch... Bitte warten';
                     submitBtn.disabled = true;
 
-                    reader.onload = function (event) {
-                        const imgDataUrl = event.target.result;
+                    const photoId = Date.now();
+                    const imageRef = storageRef(storage, 'photos/' + photoId);
+
+                    // Bild in den Firebase Storage hochladen
+                    uploadBytes(imageRef, file).then((snapshot) => {
+                        // URL des hochgeladenen Bildes abrufen
+                        return getDownloadURL(snapshot.ref);
+                    }).then((downloadURL) => {
                         const newPhoto = {
-                            id: Date.now(),
-                            url: imgDataUrl,
+                            id: photoId,
+                            url: downloadURL, // Wir speichern jetzt die Storage URL!
                             title: photoTitle,
                             author: userName,
                             score: 0
                         };
 
-                        // Simulate slight network delay for better UX feel
-                        setTimeout(() => {
-                            // In Firebase speichern (id jetzt auch als Pfad key)
-                            set(ref(db, 'photos/' + newPhoto.id), newPhoto)
-                                .then(() => {
-                                    console.log('Bild erfolgreich bei Firebase gespeichert!');
-                                })
-                                .catch((error) => {
-                                    console.error('Fehler beim Speichern:', error);
-                                    alert('Es gab einen Fehler beim Hochladen (die Datei war vielleicht zu groß).');
-                                });
+                        // Daten in die Firebase Realtime Database schreiben
+                        return set(ref(db, 'photos/' + photoId), newPhoto);
+                    }).then(() => {
+                        console.log('Bild erfolgreich bei Firebase Storage und Database gespeichert!');
+                        
+                        // Reset form
+                        uploadForm.reset();
+                        fileNameSpan.textContent = 'Klicke hier, um ein Bild auszuwählen...';
+                        fileNameSpan.style.color = 'var(--text-muted)';
+                        document.querySelector('.file-label').style.borderColor = 'rgba(255, 255, 255, 0.15)';
+                        document.querySelector('.file-label').style.backgroundColor = 'var(--card-bg)';
 
-                            // Reset form
-                            uploadForm.reset();
-                            fileNameSpan.textContent = 'Klicke hier, um ein Bild auszuwählen...';
-                            fileNameSpan.style.color = 'var(--text-muted)';
-                            document.querySelector('.file-label').style.borderColor = 'rgba(255, 255, 255, 0.15)';
-                            document.querySelector('.file-label').style.backgroundColor = 'var(--card-bg)';
-
-                            // Restore button
-                            submitBtn.textContent = originalBtnText;
-                            submitBtn.disabled = false;
-                        }, 600);
-                    };
-
-                    reader.readAsDataURL(file);
+                        // Restore button
+                        submitBtn.textContent = originalBtnText;
+                        submitBtn.disabled = false;
+                    }).catch((error) => {
+                        console.error('Fehler beim Hochladen:', error);
+                        alert('Es gab einen Fehler beim Hochladen: ' + error.message);
+                        
+                        // Restore button even if there's an error
+                        submitBtn.textContent = originalBtnText;
+                        submitBtn.disabled = false;
+                    });
                 }
             });
 
