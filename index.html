@@ -1,471 +1,517 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fotowettbewerb</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
     <style>
-:root {
-    --bg-color: #0f0f13;
-    --surface-color: #1a1a20;
-    --card-bg: #23232c;
-    --primary-color: #6366f1;
-    --primary-hover: #818cf8;
-    --text-color: #f3f4f6;
-    --text-muted: #9ca3af;
-    --border-radius: 12px;
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
+        :root {
+            --bg-color: #0f0f13;
+            --surface-color: #1a1a20;
+            --card-bg: #23232c;
+            --primary-color: #6366f1;
+            --primary-hover: #818cf8;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
 
-body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    line-height: 1.6;
-    min-height: 100vh;
-}
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
 
-header {
-    text-align: center;
-    padding: 5rem 2rem 4rem;
-    background: radial-gradient(circle at 50% -20%, rgba(99, 102, 241, 0.15) 0%, rgba(15, 15, 19, 0) 70%);
-}
+        header {
+            text-align: center;
+            padding: 5rem 2rem 4rem;
+            background: radial-gradient(circle at 50% -20%, rgba(99, 102, 241, 0.15) 0%, rgba(15, 15, 19, 0) 70%);
+        }
 
-.logo {
-    font-size: 3rem;
-    font-weight: 800;
-    margin-bottom: 1rem;
-    letter-spacing: -1px;
-    background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 4px 30px rgba(99, 102, 241, 0.2);
-}
+        .logo {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 30px rgba(99, 102, 241, 0.2);
+        }
 
-header p {
-    color: var(--text-muted);
-    font-size: 1.2rem;
-    max-width: 600px;
-    margin: 0 auto;
-}
+        header p {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
 
-main {
-    max-width: 1200px;
-    margin: -2rem auto 0;
-    padding: 2rem;
-}
+        main {
+            max-width: 1200px;
+            margin: -2rem auto 0;
+            padding: 2rem;
+        }
 
-/* Upload Section */
-.upload-section {
-    background-color: var(--surface-color);
-    padding: 2.5rem;
-    border-radius: var(--border-radius);
-    margin-bottom: 4rem;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: transform var(--transition), box-shadow var(--transition);
-}
+        /* Upload Section */
+        .upload-section {
+            background-color: var(--surface-color);
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 4rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
 
-.upload-section:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-}
+        .upload-section:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
 
-.upload-section h2, .gallery-section h2 {
-    margin-bottom: 2rem;
-    font-size: 1.75rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-}
+        .upload-section h2,
+        .gallery-section h2 {
+            margin-bottom: 2rem;
+            font-size: 1.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
 
-.upload-section h2::before, .gallery-section h2::before {
-    content: '';
-    display: inline-block;
-    width: 6px;
-    height: 24px;
-    background-color: var(--primary-color);
-    margin-right: 12px;
-    border-radius: 4px;
-}
+        .upload-section h2::before,
+        .gallery-section h2::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 24px;
+            background-color: var(--primary-color);
+            margin-right: 12px;
+            border-radius: 4px;
+        }
 
-form {
-    display: grid;
-    gap: 1.5rem;
-    grid-template-columns: 1fr;
-}
+        form {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: 1fr;
+        }
 
-@media (min-width: 768px) {
-    form {
-         grid-template-columns: 1fr 1fr;
-         gap: 2rem;
-    }
-    .file-upload-group {
-        grid-column: span 2;
-    }
-    .upload-btn {
-        grid-column: span 2;
-    }
-}
+        @media (min-width: 768px) {
+            form {
+                grid-template-columns: 1fr 1fr;
+                gap: 2rem;
+            }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
-}
+            .file-upload-group {
+                grid-column: span 2;
+            }
 
-label {
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    font-size: 0.95rem;
-    color: var(--text-muted);
-}
+            .upload-btn {
+                grid-column: span 2;
+            }
+        }
 
-input[type="text"] {
-    background-color: var(--card-bg);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: var(--text-color);
-    padding: 1rem 1.2rem;
-    border-radius: 8px;
-    font-size: 1rem;
-    outline: none;
-    transition: all var(--transition);
-}
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
 
-input[type="text"]:focus {
-    border-color: var(--primary-color);
-    background-color: rgba(99, 102, 241, 0.05);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
-}
+        label {
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
 
-.file-upload-group {
-    position: relative;
-    margin-top: 0.5rem;
-}
+        input[type="text"] {
+            background-color: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: all var(--transition);
+        }
 
-input[type="file"] {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
-    z-index: 10;
-}
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+            background-color: rgba(99, 102, 241, 0.05);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        }
 
-.file-label {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 3rem 2rem;
-    background-color: var(--card-bg);
-    border: 2px dashed rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    text-align: center;
-    cursor: pointer;
-    transition: all var(--transition);
-    position: relative;
-}
+        .file-upload-group {
+            position: relative;
+            margin-top: 0.5rem;
+        }
 
-.file-label::before {
-    content: '📁';
-    font-size: 2rem;
-    margin-right: 1rem;
-    opacity: 0.7;
-}
+        input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 10;
+        }
 
-.file-upload-group:hover .file-label {
-    border-color: var(--primary-hover);
-    background-color: rgba(99, 102, 241, 0.05);
-}
+        .file-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 2rem;
+            background-color: var(--card-bg);
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition);
+            position: relative;
+        }
 
-#fileName {
-    font-size: 1.1rem;
-    font-weight: 500;
-}
+        .file-label::before {
+            content: '📁';
+            font-size: 2rem;
+            margin-right: 1rem;
+            opacity: 0.7;
+        }
 
-.upload-btn {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 1.2rem;
-    font-size: 1.1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all var(--transition);
-    font-weight: 600;
-    margin-top: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
-}
+        .file-upload-group:hover .file-label {
+            border-color: var(--primary-hover);
+            background-color: rgba(99, 102, 241, 0.05);
+        }
 
-.upload-btn:hover {
-    background-color: var(--primary-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
-}
+        #fileName {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
 
-.upload-btn:active {
-    transform: translateY(0);
-}
+        .upload-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1.2rem;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-weight: 600;
+            margin-top: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
 
-/* Gallery Section */
-.gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2rem;
-}
+        .upload-btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
 
-.gallery-item {
-    position: relative;
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    cursor: pointer;
-    background-color: var(--surface-color);
-    aspect-ratio: 4/3;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    opacity: 0;
-    animation: fadeInUp 0.6s ease forwards;
-}
+        .upload-btn:active {
+            transform: translateY(0);
+        }
 
-.gallery-item::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at center, transparent 40%, rgba(0,0,0,0.6) 100%);
-    opacity: 0;
-    transition: opacity var(--transition);
-}
+        /* Gallery Section */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
 
-.gallery-item:hover::after {
-    opacity: 1;
-}
+        .gallery-item {
+            position: relative;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            cursor: pointer;
+            background-color: var(--surface-color);
+            aspect-ratio: 4/3;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
 
-.gallery-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
+        .gallery-item::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, transparent 40%, rgba(0, 0, 0, 0.6) 100%);
+            opacity: 0;
+            transition: opacity var(--transition);
+        }
 
-.gallery-item:hover img {
-    transform: scale(1.08);
-}
+        .gallery-item:hover::after {
+            opacity: 1;
+        }
 
-.gallery-info {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 2rem 1.5rem 1.5rem;
-    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-    color: white;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    z-index: 2;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-}
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
 
-.gallery-item:hover .gallery-info {
-    opacity: 1;
-    transform: translateY(0);
-}
+        .gallery-item:hover img {
+            transform: scale(1.08);
+        }
 
-.gallery-info-text h3 {
-    font-size: 1.25rem;
-    margin-bottom: 0.3rem;
-    font-weight: 600;
-}
+        .gallery-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem 1.5rem 1.5rem;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+            color: white;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
 
-.gallery-info-text p {
-    font-size: 0.95rem;
-    color: var(--text-muted);
-}
+        .gallery-item:hover .gallery-info {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-/* Voting System */
-.voting-controls {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
-    backdrop-filter: blur(4px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
+        .gallery-info-text h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+        }
 
-.vote-btn {
-    background: none;
-    border: none;
-    color: var(--text-color);
-    cursor: pointer;
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all var(--transition);
-    padding: 0.2rem;
-}
+        .gallery-info-text p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
 
-.vote-btn:hover {
-    color: var(--primary-color);
-    transform: scale(1.2);
-}
+        /* Voting System */
+        .voting-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-.vote-btn:active {
-    transform: scale(0.9);
-}
+        .vote-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition);
+            padding: 0.2rem;
+        }
 
-.vote-btn.voted {
-    color: var(--primary-color);
-    transform: scale(1.1);
-}
+        .vote-btn:hover {
+            color: var(--primary-color);
+            transform: scale(1.2);
+        }
 
-.vote-score {
-    font-weight: 600;
-    font-size: 1rem;
-    min-width: 20px;
-    text-align: center;
-}
+        .vote-btn:active {
+            transform: scale(0.9);
+        }
 
-.top-badge {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    background: linear-gradient(135deg, #f59e0b, #ef4444);
-    color: white;
-    padding: 0.4rem 1rem;
-    border-radius: 20px;
-    font-weight: 800;
-    font-size: 0.9rem;
-    z-index: 10;
-    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
+        .vote-btn.voted {
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
 
-.gallery-item.top-photo {
-    grid-column: span 1;
-}
+        .vote-score {
+            font-weight: 600;
+            font-size: 1rem;
+            min-width: 20px;
+            text-align: center;
+        }
 
-@media (min-width: 768px) {
-    .gallery-item.top-photo {
-        grid-column: span 2;
-        grid-row: span 2;
-    }
-}
+        .top-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
 
-@keyframes popIn {
-    0% { transform: scale(0); }
-    80% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-}
+        .gallery-item.top-photo {
+            grid-column: span 1;
+        }
 
-/* Lightbox */
-.lightbox {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(10, 10, 15, 0.95);
-    backdrop-filter: blur(10px);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
+        @media (min-width: 768px) {
+            .gallery-item.top-photo {
+                grid-column: span 2;
+                grid-row: span 2;
+            }
+        }
 
-.lightbox.active {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    opacity: 1;
-}
+        @keyframes popIn {
+            0% {
+                transform: scale(0);
+            }
 
-.lightbox-content {
-    max-width: 90vw;
-    max-height: 80vh;
-    border-radius: 8px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-    object-fit: contain;
-    transform: scale(0.95);
-    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
+            80% {
+                transform: scale(1.1);
+            }
 
-.lightbox.active .lightbox-content {
-    transform: scale(1);
-}
+            100% {
+                transform: scale(1);
+            }
+        }
 
-#lightbox-caption {
-    margin-top: 1.5rem;
-    text-align: center;
-    color: var(--text-color);
-    font-size: 1.3rem;
-    max-width: 800px;
-    padding: 0 20px;
-}
+        /* Delete Button */
+        .delete-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(239, 68, 68, 0.8);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            z-index: 10;
+            opacity: 0;
+            transition: all var(--transition);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
 
-#lightbox-caption span {
-    display: block;
-    color: var(--text-muted);
-    font-size: 1rem;
-    margin-top: 0.5rem;
-}
+        .gallery-item:hover .delete-btn {
+            opacity: 1;
+        }
 
-.close {
-    position: absolute;
-    top: 30px;
-    right: 40px;
-    color: var(--text-muted);
-    font-size: 40px;
-    font-weight: 300;
-    transition: all var(--transition);
-    cursor: pointer;
-    z-index: 1010;
-    line-height: 1;
-    width: 50px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255,255,255,0.05);
-    border-radius: 50%;
-}
+        .delete-btn:hover {
+            background: rgba(239, 68, 68, 1);
+            transform: scale(1.1);
+        }
 
-.close:hover {
-    color: white;
-    background: rgba(255,255,255,0.1);
-    transform: rotate(90deg);
-}
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+        .lightbox.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+        }
+
+        .lightbox-content {
+            max-width: 90vw;
+            max-height: 80vh;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            object-fit: contain;
+            transform: scale(0.95);
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .lightbox.active .lightbox-content {
+            transform: scale(1);
+        }
+
+        #lightbox-caption {
+            margin-top: 1.5rem;
+            text-align: center;
+            color: var(--text-color);
+            font-size: 1.3rem;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        #lightbox-caption span {
+            display: block;
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .close {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            color: var(--text-muted);
+            font-size: 40px;
+            font-weight: 300;
+            transition: all var(--transition);
+            cursor: pointer;
+            z-index: 1010;
+            line-height: 1;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .close:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(90deg);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
+
 <body>
     <header>
         <div class="logo">Foto-Wettbewerb</div>
@@ -482,7 +528,8 @@ input[type="file"] {
                 </div>
                 <div class="form-group">
                     <label for="photoTitle">Titel des Fotos</label>
-                    <input type="text" id="photoTitle" name="photoTitle" required placeholder="Gib dem Foto einen Titel">
+                    <input type="text" id="photoTitle" name="photoTitle" required
+                        placeholder="Gib dem Foto einen Titel">
                 </div>
                 <div class="form-group file-upload-group">
                     <label for="photoFile" class="file-label">
@@ -509,144 +556,199 @@ input[type="file"] {
         <div id="lightbox-caption"></div>
     </div>
 
-    <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const uploadForm = document.getElementById('uploadForm');
-    const photoFile = document.getElementById('photoFile');
-    const fileNameSpan = document.getElementById('fileName');
-    const gallery = document.getElementById('gallery');
-    
-    // Lightbox elements
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    const lightboxCaption = document.getElementById('lightbox-caption');
-    const closeBtn = document.getElementsByClassName('close')[0];
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+        import { getDatabase, ref, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 
-    // Array to hold the image objects
-    let photos = [];
-    
-    // Object to track user's votes
-    let userVotes = {};
+        const firebaseConfig = {
+            apiKey: "AIzaSyCqCw09lS-gbkdd00kYxaKE8NAd3rcomRo",
+            authDomain: "foto-wettbewerb.firebaseapp.com",
+            databaseURL: "https://foto-wettbewerb-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "foto-wettbewerb",
+            storageBucket: "foto-wettbewerb.firebasestorage.app",
+            messagingSenderId: "392527772962",
+            appId: "1:392527772962:web:14a5b8d3a8db9caa67b97b"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-    // Make voting function available globally so onclick attributes can find it
-    window.votePhoto = function(event, id, value) {
-        event.stopPropagation(); // prevent lightbox from opening
-        const photo = photos.find(p => p.id === id);
-        if (photo) {
-            const currentVote = userVotes[id] || 0;
-            
-            if (currentVote === value) {
-                photo.score -= value;
-                userVotes[id] = 0;
-            } else {
-                photo.score -= currentVote;
-                photo.score += value;
-                userVotes[id] = value;
-            }
-            renderGallery();
-        }
-    };
+        document.addEventListener('DOMContentLoaded', () => {
+            const uploadForm = document.getElementById('uploadForm');
+            const photoFile = document.getElementById('photoFile');
+            const fileNameSpan = document.getElementById('fileName');
+            const gallery = document.getElementById('gallery');
 
-    // Show filename when file selected and update styling
-    photoFile.addEventListener('change', function(e) {
-        if(this.files && this.files.length > 0) {
-            fileNameSpan.textContent = this.files[0].name;
-            fileNameSpan.style.color = 'var(--text-color)';
-            document.querySelector('.file-label').style.borderColor = 'var(--primary-color)';
-            document.querySelector('.file-label').style.backgroundColor = 'rgba(99, 102, 241, 0.05)';
-        } else {
-            fileNameSpan.textContent = 'Klicke hier, um ein Bild auszuwählen...';
-            fileNameSpan.style.color = 'var(--text-muted)';
-            document.querySelector('.file-label').style.borderColor = 'rgba(255, 255, 255, 0.15)';
-            document.querySelector('.file-label').style.backgroundColor = 'var(--card-bg)';
-        }
-    });
+            // Lightbox elements
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const lightboxCaption = document.getElementById('lightbox-caption');
+            const closeBtn = document.getElementsByClassName('close')[0];
 
-    // Handle form submission
-    uploadForm.addEventListener('submit', function(e) {
-        e.preventDefault();
+            // Array to hold the image objects
+            let photos = [];
 
-        const userName = document.getElementById('userName').value;
-        const photoTitle = document.getElementById('photoTitle').value;
-        const file = photoFile.files[0];
+            // Object to track user's votes
+            let userVotes = JSON.parse(localStorage.getItem('competitionVotes')) || {};
 
-        if (file) {
-            const reader = new FileReader();
+            // Fotos in Echtzeit aus Firebase laden!
+            const photosRef = ref(db, 'photos');
+            onValue(photosRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    // Firebase speichert es als Objekt, wir machen wieder ein Array daraus
+                    photos = Object.values(data);
+                    // Nach Datum (ID) sortieren, neuste zuerst
+                } else {
+                    photos = [];
+                }
+                renderGallery();
+            });
 
-            // Add loading state to button
-            const submitBtn = uploadForm.querySelector('.upload-btn');
-            const originalBtnText = submitBtn.textContent;
-            submitBtn.textContent = 'Lädt hoch...';
-            submitBtn.disabled = true;
-
-            reader.onload = function(event) {
-                const imgDataUrl = event.target.result;
-                const newPhoto = {
-                    id: Date.now(),
-                    url: imgDataUrl,
-                    title: photoTitle,
-                    author: userName,
-                    score: 0
-                };
-
-                // Simulate slight network delay for better UX feel
-                setTimeout(() => {
-                    photos.unshift(newPhoto); // Add to beginning
-                    renderGallery();
+            // Delete Funktion global verfügbar machen 
+            window.deletePhoto = function(event, id) {
+                event.stopPropagation(); // Lightbox verhindern
+                if (confirm('Möchtest du dieses Bild wirklich löschen?')) {
+                    // Von Firebase löschen (Echtzeit-Update passiert automatisch!)
+                    remove(ref(db, 'photos/' + id));
                     
-                    // Reset form
-                    uploadForm.reset();
+                    // Lokalen Vote löschen
+                    delete userVotes[id];
+                    localStorage.setItem('competitionVotes', JSON.stringify(userVotes));
+                }
+            };
+
+            // Make voting function available globally so onclick attributes can find it
+            window.votePhoto = function (event, id, value) {
+                event.stopPropagation(); // prevent lightbox from opening
+                const photo = photos.find(p => p.id === id);
+                if (photo) {
+                    const currentVote = userVotes[id] || 0;
+
+                    if (currentVote === value) {
+                        photo.score -= value;
+                        userVotes[id] = 0;
+                    } else {
+                        photo.score -= currentVote;
+                        photo.score += value;
+                        userVotes[id] = value;
+                    }
+                    
+                    // Vote lokal speichern
+                    localStorage.setItem('competitionVotes', JSON.stringify(userVotes));
+                    
+                    // Punktzahl in Firebase aktualisieren
+                    set(ref(db, 'photos/' + id), photo);
+                }
+            };
+
+            // Show filename when file selected and update styling
+            photoFile.addEventListener('change', function (e) {
+                if (this.files && this.files.length > 0) {
+                    fileNameSpan.textContent = this.files[0].name;
+                    fileNameSpan.style.color = 'var(--text-color)';
+                    document.querySelector('.file-label').style.borderColor = 'var(--primary-color)';
+                    document.querySelector('.file-label').style.backgroundColor = 'rgba(99, 102, 241, 0.05)';
+                } else {
                     fileNameSpan.textContent = 'Klicke hier, um ein Bild auszuwählen...';
                     fileNameSpan.style.color = 'var(--text-muted)';
                     document.querySelector('.file-label').style.borderColor = 'rgba(255, 255, 255, 0.15)';
                     document.querySelector('.file-label').style.backgroundColor = 'var(--card-bg)';
-                    
-                    // Restore button
-                    submitBtn.textContent = originalBtnText;
-                    submitBtn.disabled = false;
-                }, 600);
-            };
+                }
+            });
 
-            reader.readAsDataURL(file);
-        }
-    });
+            // Handle form submission
+            uploadForm.addEventListener('submit', function (e) {
+                e.preventDefault();
 
-    function renderGallery() {
-        gallery.innerHTML = ''; // Clear gallery
-        
-        if (photos.length === 0) {
-             const emptyMsg = document.createElement('p');
-             emptyMsg.style.color = 'var(--text-muted)';
-             emptyMsg.style.gridColumn = '1 / -1';
-             emptyMsg.style.textAlign = 'center';
-             emptyMsg.style.padding = '3rem';
-             emptyMsg.style.fontSize = '1.1rem';
-             emptyMsg.textContent = 'Noch keine Fotos hochgeladen. Sei der oder die Erste!';
-             gallery.appendChild(emptyMsg);
-             return;
-        }
+                const userName = document.getElementById('userName').value;
+                const photoTitle = document.getElementById('photoTitle').value;
+                const file = photoFile.files[0];
 
-        // Sort by score descending (highest points first)
-        photos.sort((a, b) => b.score - a.score);
+                if (file) {
+                    const reader = new FileReader();
 
-        photos.forEach((photo, index) => {
-            const item = document.createElement('div');
-            item.className = 'gallery-item';
-            
-            // Check if this is the top photo (must have positive score and be the first item)
-            const isTopPhoto = index === 0 && photo.score > 0;
-            if (isTopPhoto) {
-                item.classList.add('top-photo');
-            }
+                    // Add loading state to button
+                    const submitBtn = uploadForm.querySelector('.upload-btn');
+                    const originalBtnText = submitBtn.textContent;
+                    submitBtn.textContent = 'Lädt hoch...';
+                    submitBtn.disabled = true;
 
-            // Stagger animations based on index
-            const delay = Math.min(index * 0.1, 0.5);
-            item.style.animationDelay = `${delay}s`;
-            
-            const badgeHtml = isTopPhoto ? `<div class="top-badge">🏆 Top Bild</div>` : '';
+                    reader.onload = function (event) {
+                        const imgDataUrl = event.target.result;
+                        const newPhoto = {
+                            id: Date.now(),
+                            url: imgDataUrl,
+                            title: photoTitle,
+                            author: userName,
+                            score: 0
+                        };
 
-            item.innerHTML = `
+                        // Simulate slight network delay for better UX feel
+                        setTimeout(() => {
+                            // In Firebase speichern (id jetzt auch als Pfad key)
+                            set(ref(db, 'photos/' + newPhoto.id), newPhoto)
+                                .then(() => {
+                                    console.log('Bild erfolgreich bei Firebase gespeichert!');
+                                })
+                                .catch((error) => {
+                                    console.error('Fehler beim Speichern:', error);
+                                    alert('Es gab einen Fehler beim Hochladen (die Datei war vielleicht zu groß).');
+                                });
+
+                            // Reset form
+                            uploadForm.reset();
+                            fileNameSpan.textContent = 'Klicke hier, um ein Bild auszuwählen...';
+                            fileNameSpan.style.color = 'var(--text-muted)';
+                            document.querySelector('.file-label').style.borderColor = 'rgba(255, 255, 255, 0.15)';
+                            document.querySelector('.file-label').style.backgroundColor = 'var(--card-bg)';
+
+                            // Restore button
+                            submitBtn.textContent = originalBtnText;
+                            submitBtn.disabled = false;
+                        }, 600);
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            function renderGallery() {
+                gallery.innerHTML = ''; // Clear gallery
+
+                if (photos.length === 0) {
+                    const emptyMsg = document.createElement('p');
+                    emptyMsg.style.color = 'var(--text-muted)';
+                    emptyMsg.style.gridColumn = '1 / -1';
+                    emptyMsg.style.textAlign = 'center';
+                    emptyMsg.style.padding = '3rem';
+                    emptyMsg.style.fontSize = '1.1rem';
+                    emptyMsg.textContent = 'Noch keine Fotos hochgeladen. Sei der oder die Erste!';
+                    gallery.appendChild(emptyMsg);
+                    return;
+                }
+
+                // Sort by score descending (highest points first)
+                photos.sort((a, b) => b.score - a.score);
+
+                photos.forEach((photo, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item';
+
+                    // Check if this is the top photo (must have positive score and be the first item)
+                    const isTopPhoto = index === 0 && photo.score > 0;
+                    if (isTopPhoto) {
+                        item.classList.add('top-photo');
+                    }
+
+                    // Stagger animations based on index
+                    const delay = Math.min(index * 0.1, 0.5);
+                    item.style.animationDelay = `${delay}s`;
+
+                    const badgeHtml = isTopPhoto ? `<div class="top-badge">🏆 Top Bild</div>` : '';
+
+                    item.innerHTML = `
                 ${badgeHtml}
+                <button class="delete-btn" onclick="deletePhoto(event, ${photo.id})" title="Bild löschen">🗑️</button>
                 <img src="${photo.url}" alt="${photo.title}" loading="lazy">
                 <div class="gallery-info">
                     <div class="gallery-info-text">
@@ -660,56 +762,57 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             `;
-            
-            item.addEventListener('click', () => openLightbox(photo));
-            gallery.appendChild(item);
-        });
-    }
 
-    // Lightbox handling
-    function openLightbox(photo) {
-        lightbox.classList.add('active');
-        // Prevent body scrolling
-        document.body.style.overflow = 'hidden';
-        
-        // Small delay for smooth image change if already open
-        setTimeout(() => {
-            lightboxImg.src = photo.url;
-            lightboxImg.alt = photo.title;
-            lightboxCaption.innerHTML = `<strong>${photo.title}</strong> <span>Fotografiert von ${photo.author}</span>`;
-        }, 50);
-    }
-
-    function closeLightbox() {
-        lightbox.classList.remove('active');
-        document.body.style.overflow = '';
-        // Wait for fade out animation before resetting src
-        setTimeout(() => {
-            if(!lightbox.classList.contains('active')) {
-                lightboxImg.src = '';
+                    item.addEventListener('click', () => openLightbox(photo));
+                    gallery.appendChild(item);
+                });
             }
-        }, 300);
-    }
 
-    closeBtn.addEventListener('click', closeLightbox);
+            // Lightbox handling
+            function openLightbox(photo) {
+                lightbox.classList.add('active');
+                // Prevent body scrolling
+                document.body.style.overflow = 'hidden';
 
-    // Close on click outside image
-    lightbox.addEventListener('click', function(e) {
-        if(e.target === lightbox) {
-            closeLightbox();
-        }
-    });
+                // Small delay for smooth image change if already open
+                setTimeout(() => {
+                    lightboxImg.src = photo.url;
+                    lightboxImg.alt = photo.title;
+                    lightboxCaption.innerHTML = `<strong>${photo.title}</strong> <span>Fotografiert von ${photo.author}</span>`;
+                }, 50);
+            }
 
-    // Close on escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && lightbox.classList.contains('active')) {
-            closeLightbox();
-        }
-    });
-    
-    // Initial render call
-    renderGallery();
-});
+            function closeLightbox() {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = '';
+                // Wait for fade out animation before resetting src
+                setTimeout(() => {
+                    if (!lightbox.classList.contains('active')) {
+                        lightboxImg.src = '';
+                    }
+                }, 300);
+            }
+
+            closeBtn.addEventListener('click', closeLightbox);
+
+            // Close on click outside image
+            lightbox.addEventListener('click', function (e) {
+                if (e.target === lightbox) {
+                    closeLightbox();
+                }
+            });
+
+            // Close on escape key
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                    closeLightbox();
+                }
+            });
+
+            // Initial render call
+            renderGallery();
+        });
     </script>
 </body>
+
 </html>
