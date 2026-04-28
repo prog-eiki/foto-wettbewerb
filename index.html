@@ -1,3 +1,4 @@
+html
 <!DOCTYPE html>
 <html lang="de">
 
@@ -107,16 +108,16 @@
 
         @media (min-width: 768px) {
             form {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 1fr;
                 gap: 2rem;
             }
 
             .file-upload-group {
-                grid-column: span 2;
+                grid-column: span 1;
             }
 
             .upload-btn {
-                grid-column: span 2;
+                grid-column: span 1;
             }
         }
 
@@ -294,11 +295,6 @@
             font-weight: 600;
         }
 
-        .gallery-info-text p {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-        }
-
         /* Voting System */
         .voting-controls {
             display: flex;
@@ -465,13 +461,6 @@
             padding: 0 20px;
         }
 
-        #lightbox-caption span {
-            display: block;
-            color: var(--text-muted);
-            font-size: 1rem;
-            margin-top: 0.5rem;
-        }
-
         .close {
             position: absolute;
             top: 30px;
@@ -522,10 +511,6 @@
         <section class="upload-section">
             <h2>Neues Foto hochladen</h2>
             <form id="uploadForm">
-                <div class="form-group">
-                    <label for="userName">Dein Name</label>
-                    <input type="text" id="userName" name="userName" required placeholder="Gib deinen Namen ein">
-                </div>
                 <div class="form-group">
                     <label for="photoTitle">Titel des Fotos</label>
                     <input type="text" id="photoTitle" name="photoTitle" required
@@ -595,9 +580,7 @@
             onValue(photosRef, (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
-                    // Firebase speichert es als Objekt, wir machen wieder ein Array daraus
                     photos = Object.values(data);
-                    // Nach Datum (ID) sortieren, neuste zuerst
                 } else {
                     photos = [];
                 }
@@ -606,20 +589,17 @@
 
             // Delete Funktion global verfügbar machen 
             window.deletePhoto = function(event, id) {
-                event.stopPropagation(); // Lightbox verhindern
+                event.stopPropagation();
                 if (confirm('Möchtest du dieses Bild wirklich löschen?')) {
-                    // Von Firebase Realtime Database löschen (Echtzeit-Update passiert automatisch!)
                     remove(ref(db, 'photos/' + id));
-                    
-                    // Lokalen Vote löschen
                     delete userVotes[id];
                     localStorage.setItem('competitionVotes', JSON.stringify(userVotes));
                 }
             };
 
-            // Make voting function available globally so onclick attributes can find it
+            // Voting function
             window.votePhoto = function (event, id, value) {
-                event.stopPropagation(); // prevent lightbox from opening
+                event.stopPropagation();
                 const photo = photos.find(p => p.id === id);
                 if (photo) {
                     const currentVote = userVotes[id] || 0;
@@ -633,15 +613,12 @@
                         userVotes[id] = value;
                     }
                     
-                    // Vote lokal speichern
                     localStorage.setItem('competitionVotes', JSON.stringify(userVotes));
-                    
-                    // Punktzahl in Firebase aktualisieren
                     set(ref(db, 'photos/' + id), photo);
                 }
             };
 
-            // Show filename when file selected and update styling
+            // Show filename when file selected
             photoFile.addEventListener('change', function (e) {
                 if (this.files && this.files.length > 0) {
                     fileNameSpan.textContent = this.files[0].name;
@@ -660,12 +637,10 @@
             uploadForm.addEventListener('submit', function (e) {
                 e.preventDefault();
 
-                const userName = document.getElementById('userName').value;
                 const photoTitle = document.getElementById('photoTitle').value;
                 const file = photoFile.files[0];
 
                 if (file) {
-                    // Add loading state to button
                     const submitBtn = uploadForm.querySelector('.upload-btn');
                     const originalBtnText = submitBtn.textContent;
                     submitBtn.textContent = 'Bild wird verarbeitet...';
@@ -675,12 +650,10 @@
                     reader.onload = function(event) {
                         const img = new Image();
                         img.onload = function() {
-                            // Komprimierung: Canvas erstellen
                             const canvas = document.createElement('canvas');
                             let width = img.width;
                             let height = img.height;
                             
-                            // Maximale Größe definieren (z.B. 1200px)
                             const MAX_WIDTH = 1200;
                             const MAX_HEIGHT = 1200;
                             
@@ -702,7 +675,6 @@
                             const ctx = canvas.getContext('2d');
                             ctx.drawImage(img, 0, 0, width, height);
                             
-                            // Als komprimiertes JPEG exportieren (0.7 = 70% Qualität)
                             const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
                             
                             const photoId = Date.now();
@@ -710,14 +682,11 @@
                                 id: photoId,
                                 url: compressedDataUrl,
                                 title: photoTitle,
-                                author: userName,
                                 score: 0
                             };
 
-                            // In Realtime Database speichern
                             set(ref(db, 'photos/' + photoId), newPhoto)
                                 .then(() => {
-                                    console.log('Bild erfolgreich komprimiert und gespeichert!');
                                     uploadForm.reset();
                                     fileNameSpan.textContent = 'Klicke hier, um ein Bild auszuwählen...';
                                     fileNameSpan.style.color = 'var(--text-muted)';
@@ -727,7 +696,6 @@
                                     submitBtn.disabled = false;
                                 })
                                 .catch((error) => {
-                                    console.error('Fehler beim Speichern:', error);
                                     alert('Es gab einen Fehler beim Hochladen: ' + error.message);
                                     submitBtn.textContent = originalBtnText;
                                     submitBtn.disabled = false;
@@ -740,7 +708,7 @@
             });
 
             function renderGallery() {
-                gallery.innerHTML = ''; // Clear gallery
+                gallery.innerHTML = '';
 
                 if (photos.length === 0) {
                     const emptyMsg = document.createElement('p');
@@ -754,20 +722,17 @@
                     return;
                 }
 
-                // Sort by score descending (highest points first)
                 photos.sort((a, b) => b.score - a.score);
 
                 photos.forEach((photo, index) => {
                     const item = document.createElement('div');
                     item.className = 'gallery-item';
 
-                    // Check if this is the top photo (must have positive score and be the first item)
                     const isTopPhoto = index === 0 && photo.score > 0;
                     if (isTopPhoto) {
                         item.classList.add('top-photo');
                     }
 
-                    // Stagger animations based on index
                     const delay = Math.min(index * 0.1, 0.5);
                     item.style.animationDelay = `${delay}s`;
 
@@ -780,7 +745,6 @@
                 <div class="gallery-info">
                     <div class="gallery-info-text">
                         <h3>${photo.title}</h3>
-                        <p>von ${photo.author}</p>
                     </div>
                     <div class="voting-controls">
                         <button class="vote-btn ${userVotes[photo.id] === 1 ? 'voted' : ''}" onclick="votePhoto(event, ${photo.id}, 1)" title="Gefällt mir">▲</button>
@@ -798,21 +762,18 @@
             // Lightbox handling
             function openLightbox(photo) {
                 lightbox.classList.add('active');
-                // Prevent body scrolling
                 document.body.style.overflow = 'hidden';
 
-                // Small delay for smooth image change if already open
                 setTimeout(() => {
                     lightboxImg.src = photo.url;
                     lightboxImg.alt = photo.title;
-                    lightboxCaption.innerHTML = `<strong>${photo.title}</strong> <span>Fotografiert von ${photo.author}</span>`;
+                    lightboxCaption.innerHTML = `<strong>${photo.title}</strong>`;
                 }, 50);
             }
 
             function closeLightbox() {
                 lightbox.classList.remove('active');
                 document.body.style.overflow = '';
-                // Wait for fade out animation before resetting src
                 setTimeout(() => {
                     if (!lightbox.classList.contains('active')) {
                         lightboxImg.src = '';
@@ -821,22 +782,9 @@
             }
 
             closeBtn.addEventListener('click', closeLightbox);
+            lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && lightbox.classList.contains('active')) closeLightbox(); });
 
-            // Close on click outside image
-            lightbox.addEventListener('click', function (e) {
-                if (e.target === lightbox) {
-                    closeLightbox();
-                }
-            });
-
-            // Close on escape key
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape' && lightbox.classList.contains('active')) {
-                    closeLightbox();
-                }
-            });
-
-            // Initial render call
             renderGallery();
         });
     </script>
