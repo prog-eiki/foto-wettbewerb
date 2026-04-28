@@ -288,13 +288,25 @@
             transform: translateY(0);
         }
 
+        .gallery-info-text {
+            flex: 1;
+            margin-right: 1rem;
+        }
+
         .gallery-info-text h3 {
             font-size: 1.25rem;
             margin-bottom: 0.3rem;
             font-weight: 600;
         }
 
-        /* Voting System */
+        .actions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            align-items: flex-end;
+        }
+
+        /* Voting System (Up/Down) */
         .voting-controls {
             display: flex;
             align-items: center;
@@ -340,6 +352,54 @@
             text-align: center;
         }
 
+        /* Voting System (Stars) */
+        .star-rating-controls {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .star {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 0 0.1rem;
+            line-height: 1;
+        }
+
+        .star:hover,
+        .star:hover ~ .star,
+        .star.active,
+        .star.active ~ .star {
+            color: #f59e0b;
+            text-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+        }
+
+        .star:hover {
+            transform: scale(1.15);
+        }
+
+        .rating-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.2rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .rating-number {
+            font-weight: 600;
+            color: #f59e0b;
+        }
+
         .top-badge {
             position: absolute;
             top: 15px;
@@ -370,17 +430,9 @@
         }
 
         @keyframes popIn {
-            0% {
-                transform: scale(0);
-            }
-
-            80% {
-                transform: scale(1.1);
-            }
-
-            100% {
-                transform: scale(1);
-            }
+            0% { transform: scale(0); }
+            80% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
         /* Delete Button */
@@ -487,15 +539,8 @@
         }
 
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -568,11 +613,11 @@
             const lightboxCaption = document.getElementById('lightbox-caption');
             const closeBtn = document.getElementsByClassName('close')[0];
 
-            // Array to hold the image objects
             let photos = [];
 
-            // Object to track user's votes
+            // Speichern für beide Systeme
             let userVotes = JSON.parse(localStorage.getItem('competitionVotes')) || {};
+            let userStarVotes = JSON.parse(localStorage.getItem('competitionStarVotes')) || {};
 
             // Fotos in Echtzeit aus Firebase laden!
             const photosRef = ref(db, 'photos');
@@ -586,17 +631,19 @@
                 renderGallery();
             });
 
-            // Delete Funktion global verfügbar machen 
+            // Delete Funktion
             window.deletePhoto = function(event, id) {
                 event.stopPropagation();
                 if (confirm('Möchtest du dieses Bild wirklich löschen?')) {
                     remove(ref(db, 'photos/' + id));
                     delete userVotes[id];
+                    delete userStarVotes[id];
                     localStorage.setItem('competitionVotes', JSON.stringify(userVotes));
+                    localStorage.setItem('competitionStarVotes', JSON.stringify(userStarVotes));
                 }
             };
 
-            // Voting function
+            // Altes Voting-System (Pfeile)
             window.votePhoto = function (event, id, value) {
                 event.stopPropagation();
                 const photo = photos.find(p => p.id === id);
@@ -613,6 +660,34 @@
                     }
                     
                     localStorage.setItem('competitionVotes', JSON.stringify(userVotes));
+                    set(ref(db, 'photos/' + id), photo);
+                }
+            };
+
+            // Neues Sterne Voting-System
+            window.ratePhoto = function (event, id, value) {
+                event.stopPropagation();
+                const photo = photos.find(p => p.id === id);
+                if (photo) {
+                    const currentStarVote = userStarVotes[id] || 0;
+                    
+                    if (photo.voteCount === undefined) photo.voteCount = 0;
+                    if (photo.totalStars === undefined) photo.totalStars = 0;
+
+                    if (currentStarVote > 0) {
+                        photo.totalStars -= currentStarVote;
+                        photo.voteCount -= 1;
+                    }
+
+                    if (currentStarVote === value) {
+                        userStarVotes[id] = 0;
+                    } else {
+                        photo.totalStars += value;
+                        photo.voteCount += 1;
+                        userStarVotes[id] = value;
+                    }
+                    
+                    localStorage.setItem('competitionStarVotes', JSON.stringify(userStarVotes));
                     set(ref(db, 'photos/' + id), photo);
                 }
             };
@@ -681,7 +756,9 @@
                                 id: photoId,
                                 url: compressedDataUrl,
                                 title: photoTitle,
-                                score: 0
+                                score: 0,
+                                totalStars: 0,
+                                voteCount: 0
                             };
 
                             set(ref(db, 'photos/' + photoId), newPhoto)
@@ -721,13 +798,25 @@
                     return;
                 }
 
-                photos.sort((a, b) => b.score - a.score);
+                // Sortierung: 1. Stern-Durchschnitt, 2. Alter Score (Pfeile), 3. Anzahl Bewertungen
+                photos.sort((a, b) => {
+                    let avgA = a.voteCount > 0 ? (a.totalStars / a.voteCount) : 0;
+                    let avgB = b.voteCount > 0 ? (b.totalStars / b.voteCount) : 0;
+                    
+                    if (avgB !== avgA) return avgB - avgA;
+                    if ((b.score || 0) !== (a.score || 0)) return (b.score || 0) - (a.score || 0);
+                    return (b.voteCount || 0) - (a.voteCount || 0);
+                });
 
                 photos.forEach((photo, index) => {
                     const item = document.createElement('div');
                     item.className = 'gallery-item';
 
-                    const isTopPhoto = index === 0 && photo.score > 0;
+                    let voteCount = photo.voteCount || 0;
+                    let totalStars = photo.totalStars || 0;
+                    let avgRating = voteCount > 0 ? (totalStars / voteCount).toFixed(1) : "0.0";
+
+                    const isTopPhoto = index === 0 && (voteCount > 0 || photo.score > 0);
                     if (isTopPhoto) {
                         item.classList.add('top-photo');
                     }
@@ -744,11 +833,24 @@
                 <div class="gallery-info">
                     <div class="gallery-info-text">
                         <h3>${photo.title}</h3>
+                        <div class="rating-display">
+                            <span class="rating-number">⭐ ${avgRating}</span>
+                            <span class="rating-count">(${voteCount})</span>
+                        </div>
                     </div>
-                    <div class="voting-controls">
-                        <button class="vote-btn ${userVotes[photo.id] === 1 ? 'voted' : ''}" onclick="votePhoto(event, ${photo.id}, 1)" title="Gefällt mir">▲</button>
-                        <span class="vote-score">${photo.score}</span>
-                        <button class="vote-btn ${userVotes[photo.id] === -1 ? 'voted' : ''}" onclick="votePhoto(event, ${photo.id}, -1)" title="Gefällt mir nicht">▼</button>
+                    
+                    <div class="actions-container">
+                        <div class="star-rating-controls">
+                            ${[5, 4, 3, 2, 1].map(star => `
+                                <span class="star ${userStarVotes[photo.id] === star ? 'active' : ''}" 
+                                      onclick="ratePhoto(event, ${photo.id}, ${star})" title="${star} Sterne">★</span>
+                            `).join('')}
+                        </div>
+                        <div class="voting-controls">
+                            <button class="vote-btn ${userVotes[photo.id] === 1 ? 'voted' : ''}" onclick="votePhoto(event, ${photo.id}, 1)" title="Gefällt mir">▲</button>
+                            <span class="vote-score">${photo.score || 0}</span>
+                            <button class="vote-btn ${userVotes[photo.id] === -1 ? 'voted' : ''}" onclick="votePhoto(event, ${photo.id}, -1)" title="Gefällt mir nicht">▼</button>
+                        </div>
                     </div>
                 </div>
             `;
